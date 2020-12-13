@@ -1,0 +1,14 @@
+.day {
+  padding: 4px 0px;
+  &-in-month {
+    color: #343542;
+  }
+  &-out-month {
+    color: #8c8c8c;
+  }
+  &-active {
+    background-color: #191919;
+    border-radius: 50%;
+    color: #ffffff;
+  }
+}

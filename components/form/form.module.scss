@@ -1,0 +1,16 @@
+.field {
+  padding: 10px 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fieldInput {
+  flex-basis: 60%;
+  max-width: 60%;
+}
+
+.fieldLAbel {
+  flex-basis: 40%;
+  max-width: 40%;
+}

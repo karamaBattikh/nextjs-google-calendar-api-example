@@ -1,0 +1,16 @@
+.wrapper {
+  display: inline-block;
+  padding: 16px;
+}
+
+.calendarMonth {
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+
+  h4 {
+    color: #065ffd;
+  }
+}

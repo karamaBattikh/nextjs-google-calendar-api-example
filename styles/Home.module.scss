@@ -1,0 +1,22 @@
+.container {
+  min-height: 100vh;
+  padding: 0 0.5rem;
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+
+  &:before {
+    content: "";
+    position: absolute;
+    border: 1px solid;
+    height: 99%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  > * {
+    flex: 1 1 0%;
+    margin: auto;
+  }
+}
