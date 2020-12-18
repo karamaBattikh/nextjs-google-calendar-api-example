@@ -1,0 +1,22 @@
+.form {
+  max-width: 60%;
+  margin: auto;
+}
+
+.field {
+  padding: 10px 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.fieldInput {
+  flex-basis: 60%;
+  max-width: 60%;
+  text-align: left;
+}
+
+.fieldLabel {
+  flex-basis: 40%;
+  max-width: 40%;
+}

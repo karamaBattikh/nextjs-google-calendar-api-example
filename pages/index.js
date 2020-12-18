@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import Link from "next/link";
 import styles from "../styles/Home.module.scss";
-import Calendar from "components/calendar";
-import FormEvent from "components/form";
 
 export default function Home() {
-  const [dayClick, setDayClick] = useState(new Date());
   return (
-    <div className={styles.container}>
-      <Calendar setDayClick={setDayClick} dayClick={dayClick} />
-      <FormEvent day={dayClick} />
+    <div className={styles.content}>
+      <div>
+        <Link href="/event">
+          <a>create new Event</a>
+        </Link>
+      </div>
+      <div>
+        <Link href="/calendar">
+          <a>create new Calendar</a>
+        </Link>
+      </div>
     </div>
   );
 }

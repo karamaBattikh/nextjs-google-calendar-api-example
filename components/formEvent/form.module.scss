@@ -8,9 +8,20 @@
 .fieldInput {
   flex-basis: 60%;
   max-width: 60%;
+  text-align: left;
 }
 
-.fieldLAbel {
+.fieldLabel {
   flex-basis: 40%;
   max-width: 40%;
+}
+
+.color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 10px 5px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
 }

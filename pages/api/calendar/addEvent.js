@@ -1,5 +1,4 @@
-// Require google from googleapis package.
-const { google } = require("googleapis");
+import googleCalendar from "utils/googleCalendar";
 
 export default (req, res) => {
   const {
@@ -8,22 +7,11 @@ export default (req, res) => {
     description,
     endTime,
     startTime,
-    title,
+    summary,
+    color = 1,
+    idCalendar = "primary",
+    attendees,
   } = JSON.parse(req.body);
-
-  // Require oAuth2 from our google instance.
-  const { OAuth2 } = google.auth;
-
-  // Create a new instance of oAuth and set our Client ID & Client Secret.
-  const oAuth2Client = new OAuth2(
-    process.env.GOOGLE_ID,
-    process.env.GOOGLE_SECRET
-  );
-
-  // Call the setCredentials method on our oAuth2Client instance and set our refresh token.
-  oAuth2Client.setCredentials({
-    refresh_token: process.env.REFRESH_TOKEN,
-  });
 
   // Create a new event start date instance for temp uses in our calendar.
   const eventStartTime = new Date(dayEvent);
@@ -35,9 +23,9 @@ export default (req, res) => {
 
   // Create a dummy event for temp uses in our calendar
   const event = {
-    summary: title,
+    summary: summary,
     description: description,
-    colorId: 3,
+    colorId: color,
     start: {
       dateTime: eventStartTime,
     },
@@ -49,35 +37,29 @@ export default (req, res) => {
         requestId: "7qxalsvy0e",
       },
     },
-    sendNotifications: true,
-    attendees: [
-      { email: "karama.battikh@oyez.fr" },
-      { email: "battikh.karama@gmail.com" },
-    ],
+    visibility: "public",
+    attendees: attendees,
     // recurrence: ["RRULE:FREQ=DAILY;INTERVAL=2"],
   };
 
-  // Create a new calender instance.
-  const calendar = google.calendar({ version: "v3", auth: oAuth2Client });
-
+  const calendar = googleCalendar;
   calendar.freebusy.query(
     {
       resource: {
         timeMin: eventStartTime,
         timeMax: eventEndTime,
-        items: [{ id: "primary" }],
+        items: [{ id: idCalendar }],
       },
     },
     (err, response) => {
       if (err) {
-        res.status(500).json({
-          error: {
-            code: 500,
-            message: "Free Busy Query Error",
-          },
+        return res.status(500).json({
+          status: 500,
+          message: "Free Busy Query Error",
+          data: err,
         });
       }
-      const eventsArray = response.data.calendars.primary.busy;
+      const eventsArray = response.data.calendars[idCalendar].busy;
 
       console.log(
         "🚀 ~ file: test2Calendar.js ~ line 74 ~ eventsArray",
@@ -87,33 +69,36 @@ export default (req, res) => {
       if (eventsArray.length === 0)
         calendar.events.insert(
           {
-            calendarId: "primary",
+            calendarId: idCalendar,
             conferenceDataVersion: conference ? 1 : 0,
             resource: event,
+            sendNotifications: true,
+            sendUpdates: "all",
           },
-          (err) => {
+          (err, data) => {
+            console.log("🚀 ~ file: addEvent.js ~ line 96 ~ data", data);
             if (err) {
-              res.status(500).json({
-                error: {
-                  code: 500,
-                  message: "calendar Event Creation Error ",
-                },
+              return res.status(500).json({
+                status: 500,
+                message: "calendar Event Creation Error",
+                data: err,
               });
             } else {
-              res
-                .status(200)
-                .send({ message: "Calendar event successfully created." });
+              return res.status(200).json({
+                status: 200,
+                message: "Calendar event successfully created.",
+                data: data.data,
+              });
             }
           }
         );
 
       // If event array is not empty log that we are busy.
       if (eventsArray.length !== 0) {
-        res.status(500).send({
-          error: {
-            code: 500,
-            message: "Sorry I'm busy...",
-          },
+        return res.status(500).json({
+          status: 500,
+          message: "Sorry I'm busy...",
+          data: eventsArray,
         });
       }
     }
