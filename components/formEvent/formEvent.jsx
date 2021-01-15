@@ -2,6 +2,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import style from "./form.module.scss";
+import Color from "components/color";
+import { CALENDAR_COLOR } from "utils/constants";
 
 const FormEvent = ({ day }) => {
   const { register, handleSubmit, watch, control, errors, setValue } = useForm({
@@ -98,129 +100,19 @@ const FormEvent = ({ day }) => {
       </div>
 
       <div>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="1"
-          style={{ backgroundColor: "#7986cb" }}
-          onClick={(e) => {
-            setValue("color", e?.target?.dataset?.set);
-          }}
-        >
-          {watch("color") === "1" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          name="color"
-          ref={register}
-          type="button"
-          className={style.color}
-          data-set="2"
-          style={{ backgroundColor: "#33b679" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "2" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="3"
-          style={{ backgroundColor: "#8e24aa" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "3" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="4"
-          style={{ backgroundColor: "#e67c73" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "4" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="5"
-          style={{ backgroundColor: "#f6c026" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "5" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="6"
-          style={{ backgroundColor: "	#f5511d" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "6" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="7"
-          style={{ backgroundColor: "#039be5" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "7" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="8"
-          style={{ backgroundColor: "#616161" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "8" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="9"
-          style={{ backgroundColor: "#3f51b5" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "9" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="10"
-          style={{ backgroundColor: "	#0b8043" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "10" && <img src="/check.svg" width="15" />}
-        </button>
-        <button
-          type="button"
-          name="color"
-          ref={register}
-          className={style.color}
-          data-set="11"
-          style={{ backgroundColor: "#d60000" }}
-          onClick={(e) => setValue("color", e?.target?.dataset?.set)}
-        >
-          {watch("color") === "11" && <img src="/check.svg" width="15" />}
-        </button>
+        {CALENDAR_COLOR?.map((color, index) => (
+          <Color
+            key={`color-${index}`}
+            name="color"
+            inputRef={register}
+            color={color}
+            handleClick={() => {
+              setValue("color", index);
+            }}
+          >
+            {watch("color") == index && <img src="/check.svg" width="15" />}
+          </Color>
+        ))}
       </div>
 
       <div className={style.field}>

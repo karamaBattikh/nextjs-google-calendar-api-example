@@ -1,11 +1,22 @@
 .day {
   padding: 4px 0px;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   &-in-month {
     color: #343542;
   }
   &-out-month {
     color: #8c8c8c;
   }
+}
+
+.date {
+  padding: 5px;
   &-active {
     background-color: #191919;
     border-radius: 50%;

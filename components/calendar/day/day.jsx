@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styles from "./day.module.scss";
 
 const activeDayClass = {
-  active: "day-active",
+  active: "date-active",
 };
 
 const colorDay = {
@@ -13,20 +13,24 @@ const colorDay = {
 };
 
 const Day = ({ day, onClick, activeDay, dayOfMonth, weekend }) => {
-  const classNames = clsx(
+  const buttonClassNames = clsx(
     styles.day,
     dayOfMonth && styles?.[colorDay?.["inMonth"]],
-    activeDay && !weekend && styles?.[activeDayClass?.["active"]],
     (weekend || !dayOfMonth) && styles?.[colorDay?.["outMonth"]]
   );
+  const dateClassNames = clsx(
+    styles.date,
+    activeDay && !weekend && styles?.[activeDayClass?.["active"]]
+  );
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className={classNames}
+      className={buttonClassNames}
       disabled={weekend}
     >
-      {day}
+      <span className={dateClassNames}>{day}</span>
     </button>
   );
 };

@@ -8,8 +8,13 @@ export default function Event() {
 
   return (
     <div className={styles.container}>
-      <Calendar setDayClick={setDayClick} dayClick={dayClick} />
-      <FormEvent day={dayClick} />
+      <div className={styles.smCalendar}>
+        <Calendar setDayClick={setDayClick} dayClick={dayClick} size="small" />
+      </div>
+      <div className={styles.lgCalendar}>
+        <Calendar setDayClick={setDayClick} dayClick={dayClick} size="large" />
+      </div>
+      {/* <FormEvent day={dayClick} /> */}
     </div>
   );
 }

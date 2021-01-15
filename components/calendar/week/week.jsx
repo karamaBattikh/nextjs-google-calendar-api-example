@@ -7,11 +7,10 @@ import {
   startOfWeek,
 } from "date-fns";
 import PropTypes from "prop-types";
+import { DAYLIST } from "utils/constants";
 
 import Day from "../day";
 import styles from "./week.module.scss";
-
-const DAYLIST = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
 const getDayOfWeek = (month, year) => {
   const rows = Array.from(Array(6).keys());

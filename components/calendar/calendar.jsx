@@ -1,27 +1,9 @@
 import { getMonth, getYear } from "date-fns";
-import { useState } from "react";
-
 import styles from "./calendar.module.scss";
 import Week from "./week";
-
-export const MONTHLIST = [
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Août",
-  "Septembre",
-  "Octobre",
-  "Novembre",
-  "Décembre",
-];
+import { MONTHLIST } from "utils/constants";
 
 function Calendar({ setDayClick, dayClick }) {
-  // const [dayClick, setDayClick] = useState(new Date());
-
   const month = getMonth(new Date());
   const year = getYear(new Date());
 

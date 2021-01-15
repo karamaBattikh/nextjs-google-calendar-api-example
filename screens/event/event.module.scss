@@ -1,30 +1,20 @@
 .container {
-  min-height: 100vh;
   padding: 0 0.5rem;
   display: flex;
 
   justify-content: space-between;
   align-items: center;
   position: relative;
+}
 
-  &:before {
-    content: "";
-    position: absolute;
-    border: 1px solid;
-    height: 99%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  > * {
-    flex: 1 1 0%;
-    margin: auto;
-  }
-
-  @media (max-width: 750px) {
-    &:before {
-      display: none;
-    }
-    width: 100%;
-    flex-direction: column;
-  }
+.smCalendar {
+  flex: 1 1 20%;
+  max-width: 20%;
+  margin-right: 5px;
+  align-self: flex-start;
+}
+.lgCalendar {
+  flex: 1 1 80%;
+  max-width: 80%;
+  height: 100vh;
 }

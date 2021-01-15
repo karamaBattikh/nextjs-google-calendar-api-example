@@ -7,6 +7,8 @@ module.exports = {
     config.resolve.alias.components = path.join(__dirname, "components");
     config.resolve.alias.screens = path.join(__dirname, "screens");
     config.resolve.alias.utils = path.join(__dirname, "utils");
+    config.resolve.alias.styles = path.join(__dirname, "styles");
+
     config.plugins.push(new Dotenv({ silent: true }));
 
     return config;

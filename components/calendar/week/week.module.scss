@@ -1,8 +1,11 @@
 .calendarWeek {
   display: grid;
-  gap: 8px 24px;
-  grid-template-columns: repeat(7, 28px);
-  grid-template-rows: repeat(7, 28px);
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: 25px repeat(6, 1fr);
   text-align: center;
   align-items: center;
+  height: 100%;
+  > * {
+    border: 1px solid #dfdfdf;
+  }
 }
