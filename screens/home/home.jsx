@@ -1,16 +1,18 @@
-import Link from "next/link";
+import { useState } from "react";
+import Calendar from "components/molecules/calendar";
 import styles from "./home.module.scss";
 
 const Home = () => {
-  return (
-    <div className={styles.content}>
-      <Link href="/event">
-        <a>create new Event</a>
-      </Link>
+  const [dayClick, setDayClick] = useState(new Date());
 
-      <Link href="/calendar">
-        <a>create new Calendar</a>
-      </Link>
+  return (
+    <div className={styles.container}>
+      <div className={styles.smCalendar}>
+        <Calendar setDayClick={setDayClick} dayClick={dayClick} />
+      </div>
+      <div className={styles.lgCalendar}>
+        <Calendar setDayClick={setDayClick} dayClick={dayClick} />
+      </div>
     </div>
   );
 };

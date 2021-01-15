@@ -10,3 +10,24 @@
     cursor: pointer;
   }
 }
+
+.container {
+  padding: 0 0.5rem;
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.smCalendar {
+  flex: 1 1 20%;
+  max-width: 20%;
+  margin-right: 5px;
+  align-self: flex-start;
+}
+.lgCalendar {
+  flex: 1 1 80%;
+  max-width: 80%;
+  height: 100vh;
+}

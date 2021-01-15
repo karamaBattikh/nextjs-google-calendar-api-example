@@ -2,7 +2,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import style from "./form.module.scss";
-import Color from "components/color";
+import Color from "components/atoms/color";
 import { CALENDAR_COLOR } from "utils/constants";
 
 const FormEvent = ({ day }) => {
