@@ -53,7 +53,13 @@ const options = {
       session.accessToken = user?.accessToken;
       return Promise.resolve(session);
     },
-    jwt: async (token) => {
+    jwt: async (token, user, account) => {
+      const isSignIn = user ? true : false;
+
+      if (isSignIn) {
+        const { accessToken } = account;
+        token.accessToken = accessToken;
+      }
       return Promise.resolve(token);
     },
   },

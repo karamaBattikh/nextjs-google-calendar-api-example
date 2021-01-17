@@ -1,6 +1,7 @@
 import "styles/globals.scss";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider } from "next-auth/client";
+import { ModalProvider } from "contexts/modal";
 
 function MyApp({ Component, pageProps }) {
   const { session } = pageProps;
@@ -20,10 +21,13 @@ function MyApp({ Component, pageProps }) {
       <Provider
         session={session}
         options={{
-          clientMaxAge: 60 * 60,
+          clientMaxAge: 30 * 60,
         }}
       >
-        <Component {...pageProps} />
+        <ModalProvider>
+          <Component {...pageProps} />
+          <div id="modal-root" />
+        </ModalProvider>
       </Provider>
     </QueryClientProvider>
   );

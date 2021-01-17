@@ -1,103 +1,138 @@
-import { useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import style from "./form.module.scss";
+import { useState, useEffect, useContext } from "react";
+import { ModalContext } from "contexts/modal";
+import { useForm } from "react-hook-form";
+import styles from "./form.module.scss";
+import Button from "components/atoms/button";
+import Input from "components/atoms/input";
+import { useCreateCalendar } from "services/calendar";
+import { LOADING, SUCCESS, ERROR } from "utils/constants";
+
+const REGEX_EMAIL = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/g;
 
 const FormCalendar = () => {
-  const { register, handleSubmit, control, watch, errors, setValue } = useForm({
-    defaultValues: {
-      emailList: [{ email: "" }],
-    },
+  const { register, handleSubmit, setError, clearErrors, errors } = useForm({
+    mode: "onChange",
+    reValidateMode: "onBlur",
   });
-  const { fields, remove, insert } = useFieldArray({
-    control,
-    name: "emailList",
-  });
+
+  const { toggle } = useContext(ModalContext);
+
+  const [attendees, setAttendees] = useState([]);
+
+  const { mutate: mutateCreate, status } = useCreateCalendar();
 
   const onSubmit = async (values) => {
-    const res = await fetch("/api/calendar/addCalendar", {
-      method: "POST",
-      body: JSON.stringify({
-        ...values,
-        emailList: values?.emailList?.reduce((acc, item) => {
-          if (item.email) acc.push(item.email);
-          return acc;
-        }, []),
-      }),
-    });
+    const data = {
+      ...values,
+      emailList: attendees,
+    };
 
-    const { data, message, status } = await res.json();
-    console.log(
-      "🚀 ~ file: index.js ~ line 81 ~ addEventToClaendar ~ res",
-      status,
-      message,
-      data
-    );
+    await mutateCreate(data);
+  };
+
+  useEffect(() => {
+    if (status === SUCCESS) {
+      toggle(false);
+    }
+    return () => {};
+  }, [status, toggle]);
+
+  const handleAttendees = (event) => {
+    if (event.charCode === 13) {
+      if (!event.target.value.match(REGEX_EMAIL)) {
+        setError("attendees", {
+          type: "manual",
+          message: "Veuillez saisir une adresse e-mail correcte",
+        });
+      } else {
+        clearErrors("attendees");
+        if (attendees.find((attendee) => attendee === event.target.value)) {
+          setError("attendees", {
+            type: "manual",
+            message: "cette adress déja existe",
+          });
+        } else {
+          setAttendees([...attendees, event.target.value]);
+          event.target.value = "";
+        }
+      }
+    }
   };
 
   return (
-    <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
-      <div className={style.field}>
-        <label htmlFor="summary" className={style.fieldLabel}>
-          summary
-        </label>
-        <input
-          id="summary"
-          name="summary"
-          type="text"
-          ref={register}
-          className={style.fieldInput}
-        />
-      </div>
+    <form className={styles.form}>
+      <Input
+        label="summary"
+        id="summary"
+        name="summary"
+        type="text"
+        placeholder="summary"
+        refInput={register({ required: "summary est obligatoire" })}
+        error={!!errors.summary}
+        errorMessage={errors.summary?.message}
+      />
 
-      <div className={style.field}>
-        <label htmlFor="description" className={style.fieldLabel}>
-          description
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          type="text"
-          ref={register}
-          className={style.fieldInput}
-        />
-      </div>
+      <Input
+        label="description"
+        id="description"
+        name="description"
+        type="text"
+        refInput={register({ required: "description est obligatoire" })}
+        error={!!errors?.description}
+        errorMessage={errors?.description?.message}
+      />
 
-      <div className={style.field}>
-        <label htmlFor="eamil" className={style.fieldLabel}>
-          email
-        </label>
-        <div className={style.fieldInput}>
-          <div>
-            {fields?.map((field, index) => {
-              return (
-                <div key={field.id}>
-                  <input
-                    type="email"
-                    name={`emailList[${index}].email`}
-                    defaultValue={`${field.email}`}
-                    ref={register()}
-                  />
-                  <button type="button" onClick={() => remove(index)}>
-                    Delete
-                  </button>
-                </div>
-              );
-            })}
+      <Input
+        label="emails"
+        type="text"
+        name="email"
+        onBlur={() => {
+          clearErrors("attendees");
+        }}
+        placeholder="Ajouter des invités"
+        onKeyPress={(e) => handleAttendees(e)}
+        handleChange={() => {
+          clearErrors("attendees");
+        }}
+        error={!!errors?.attendees}
+        errorMessage={errors?.attendees?.message}
+      />
+
+      {attendees?.map((attendee, index) => {
+        return (
+          <div className={styles.attendee} key={index}>
+            <span>{attendee}</span>
+            <Button
+              icon="onlyIcon"
+              handleClick={() => {
+                setAttendees(attendees.filter((_, i) => i !== index));
+              }}
+            >
+              <img src="/close.svg" width="15" />
+            </Button>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              insert(fields.length, {
-                email: "",
-              });
-            }}
-          >
-            +
-          </button>
-        </div>
-      </div>
+        );
+      })}
 
-      <button type="submit">Create Calendar</button>
+      <Button
+        center
+        bgColor="cornflowerblue"
+        handleClick={(e) => {
+          e.preventDefault();
+          if (attendees.length <= 0) {
+            setError("attendees", {
+              type: "manual",
+              message: "one email is required",
+            });
+          }
+          handleSubmit(onSubmit)();
+        }}
+      >
+        {status === LOADING ? "loading..." : "Create Calendar"}
+      </Button>
+      {status === ERROR && (
+        <p style={{ color: "red" }}>probléme dans la creation de calendrier</p>
+      )}
     </form>
   );
 };

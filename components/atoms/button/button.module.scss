@@ -1,0 +1,33 @@
+.button {
+  border: 0;
+  padding: 10px;
+  border-radius: 8px;
+
+  outline: 0;
+  cursor: pointer;
+  font-size: 14px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sm-button {
+  width: auto;
+}
+
+.lg-button {
+  width: 100%;
+}
+
+.with-icon {
+  svg {
+    padding-right: 10px;
+  }
+}
+
+.only-icon {
+  border-radius: 100%;
+  padding: 5px;
+  border: 1px solid black;
+}

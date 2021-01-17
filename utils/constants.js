@@ -1,3 +1,9 @@
+export const IDLE = "idle";
+export const LOADING = "loading";
+export const DONE = "done";
+export const SUCCESS = "success";
+export const ERROR = "error";
+
 export const CALENDAR_COLOR = [
   "#039be5",
   "#7986cb",

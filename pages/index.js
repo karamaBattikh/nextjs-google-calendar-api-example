@@ -1,25 +1,25 @@
 import Home from "screens/home";
 import { getSession, signIn } from "next-auth/client";
+import styles from "styles/home.module.scss";
+import Button from "components/atoms/button";
 
 const HomePage = ({ session }) => (
   <div>
     {!session && (
-      <div>
-        <div>
-          <img src="consortium_logo.svg" alt="" />
-          <h1 size="h2">Connexion</h1>
+      <div className={styles.homeConnection}>
+        <h2 className={styles.homeConnectionTitle}>Connexion</h2>
 
-          <button
-            icon="icon"
-            onClick={(e) => {
-              e.preventDefault();
-              signIn("google");
-            }}
-          >
-            {/* <Google /> */}
-            Connectez-vous via Google
-          </button>
-        </div>
+        <Button
+          bgColor="red"
+          color="white"
+          size="large"
+          handleClick={(e) => {
+            e.preventDefault();
+            signIn("google");
+          }}
+        >
+          Connectez-vous via Google
+        </Button>
       </div>
     )}
 

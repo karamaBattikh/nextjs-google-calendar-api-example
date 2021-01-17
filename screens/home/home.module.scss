@@ -7,14 +7,25 @@
   position: relative;
 }
 
-.smCalendar {
+.containerLeft {
   flex: 1 1 20%;
   max-width: 20%;
   margin-right: 5px;
   align-self: flex-start;
 }
-.lgCalendar {
+.containerRight {
   flex: 1 1 80%;
   max-width: 80%;
   height: 100vh;
+}
+
+.calendarList {
+  margin-top: 20px;
+}
+
+.calendarListTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px auto;
 }
