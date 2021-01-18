@@ -37,6 +37,11 @@ const options = {
     },
   ],
   secret: process.env.SECRET,
+  session: {
+    jwt: true,
+    maxAge: 1 * 1 * 30 * 60, // 30 days
+    updateAge: 1 * 15 * 60, // 24 hours
+  },
   callbacks: {
     signIn: async (user, account, profile) => {
       if (
@@ -51,13 +56,16 @@ const options = {
     },
     session: async (session, user) => {
       session.accessToken = user?.accessToken;
-      return Promise.resolve(session);
+      if (new Date(session.auth_time).getTime() > new Date().getTime())
+        return Promise.reject();
+      else return Promise.resolve(session);
     },
     jwt: async (token, user, account) => {
       const isSignIn = user ? true : false;
 
       if (isSignIn) {
         const { accessToken } = account;
+        token.auth_time = Math.floor(Date.now() / 1000);
         token.accessToken = accessToken;
       }
       return Promise.resolve(token);

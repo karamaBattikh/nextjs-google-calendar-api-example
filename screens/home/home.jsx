@@ -2,9 +2,10 @@ import { useState, useContext } from "react";
 import { ModalContext } from "contexts/modal";
 import Calendar from "components/molecules/calendar";
 import styles from "./home.module.scss";
-import { useCalendars } from "services/calendar";
+import { useCalendars, useDeleteCalendar } from "services/calendar";
 import Button from "components/atoms/button";
 import FormCalendar from "components/molecules/formCalendar";
+import Confirmation from "components/molecules/confirmation";
 
 const Home = () => {
   const [dayClick, setDayClick] = useState(new Date());
@@ -36,10 +37,29 @@ const Home = () => {
           {calendarList &&
             calendarList.map((calendar, index) => (
               <div
+                className={styles.calendarItem}
                 key={`calendar-${index}`}
                 style={{ color: calendar?.backgroundColor }}
               >
-                <input type="checkbox" /> {calendar?.summary}
+                <span>
+                  <input type="checkbox" /> {calendar?.summary}
+                </span>
+
+                <Button
+                  appearance="onlyIcon"
+                  bgColor="white"
+                  handleClick={() =>
+                    handleModalContent(
+                      <Confirmation
+                        title={`Vous allez supprimer définitivement Calendrier: ${calendar?.summary}`}
+                        mutation={useDeleteCalendar}
+                        dataId={calendar?.calendarID}
+                      />
+                    )
+                  }
+                >
+                  <img src="/close.svg" width="15" />
+                </Button>
               </div>
             ))}
         </div>

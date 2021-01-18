@@ -36,3 +36,25 @@ export const useCreateCalendar = () => {
     }
   );
 };
+
+export function useDeleteCalendar() {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (calendarId) => {
+      const res = await fetch("/api/calendar/deleteCalendar", {
+        method: "DELETE",
+        body: JSON.stringify({ calendarID: calendarId }),
+      });
+      const result = await res.json();
+      if (result.status !== 200) return Promise.reject({ ...result });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("get-all-calendar");
+      },
+      useErrorBoundary: false,
+      renderError: true,
+    }
+  );
+}

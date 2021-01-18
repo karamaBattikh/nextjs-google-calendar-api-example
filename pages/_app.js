@@ -17,19 +17,14 @@ function MyApp({ Component, pageProps }) {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Provider
-        session={session}
-        options={{
-          clientMaxAge: 30 * 60,
-        }}
-      >
+    <Provider session={session}>
+      <QueryClientProvider client={queryClient}>
         <ModalProvider>
           <Component {...pageProps} />
           <div id="modal-root" />
         </ModalProvider>
-      </Provider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 }
 
