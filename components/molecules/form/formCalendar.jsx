@@ -5,9 +5,7 @@ import styles from "./form.module.scss";
 import Button from "components/atoms/button";
 import Input from "components/atoms/input";
 import { useCreateCalendar } from "services/calendar";
-import { LOADING, SUCCESS, ERROR } from "utils/constants";
-
-const REGEX_EMAIL = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/g;
+import { LOADING, SUCCESS, ERROR, REGEX_EMAIL } from "utils/constants";
 
 const FormCalendar = () => {
   const { register, handleSubmit, setError, clearErrors, errors } = useForm({

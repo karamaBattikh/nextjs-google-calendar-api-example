@@ -4,7 +4,6 @@ import { getSession } from "next-auth/client";
 
 export default async (req, res) => {
   const session = await getSession({ req });
-  console.log("🚀 ~ file: calendars.js ~ line 7 ~ session", session);
 
   const calendar = await getGoogleClient(session?.accessToken);
 

@@ -1,6 +1,11 @@
-import googleCalendar from "utils/googleCalendar";
+import getGoogleClient from "utils/clientGoogle";
+import { getSession } from "next-auth/client";
 
-export default (req, res) => {
+export default async (req, res) => {
+  const session = await getSession({ req });
+
+  const calendar = await getGoogleClient(session?.accessToken);
+
   const {
     dayEvent,
     conference,
@@ -8,7 +13,7 @@ export default (req, res) => {
     endTime,
     startTime,
     summary,
-    color = 1,
+    color = 0,
     idCalendar = "primary",
     attendees,
   } = JSON.parse(req.body);
@@ -38,69 +43,78 @@ export default (req, res) => {
       },
     },
     visibility: "public",
-    attendees: attendees,
+    attendees: [{ email: session.user.email, self: true }, ...attendees],
     // recurrence: ["RRULE:FREQ=DAILY;INTERVAL=2"],
   };
 
-  const calendar = googleCalendar;
-  calendar.freebusy.query(
-    {
-      resource: {
-        timeMin: eventStartTime,
-        timeMax: eventEndTime,
-        items: [{ id: idCalendar }],
+  return new Promise((resolver, reject) => {
+    calendar.freebusy.query(
+      {
+        resource: {
+          timeMin: eventStartTime,
+          timeMax: eventEndTime,
+          items: [{ id: idCalendar }],
+        },
       },
-    },
-    (err, response) => {
-      if (err) {
-        return res.status(500).json({
-          status: 500,
-          message: "Free Busy Query Error",
-          data: err,
-        });
-      }
-      const eventsArray = response.data.calendars[idCalendar].busy;
+      (err, response) => {
+        if (err) {
+          res.json({
+            status: err?.code,
+            message: err?.response?.statusText,
+            errors: err,
+            data: [],
+          });
+          reject();
+        }
+        const eventsArray = response?.data?.calendars[idCalendar].busy;
 
-      console.log(
-        "🚀 ~ file: test2Calendar.js ~ line 74 ~ eventsArray",
-        eventsArray
-      );
+        // console.log(
+        //   "🚀 ~ file: test2Calendar.js ~ line 74 ~ eventsArray",
+        //   eventsArray
+        // );
 
-      if (eventsArray.length === 0)
-        calendar.events.insert(
-          {
-            calendarId: idCalendar,
-            conferenceDataVersion: conference ? 1 : 0,
-            resource: event,
-            sendNotifications: true,
-            sendUpdates: "all",
-          },
-          (err, data) => {
-            console.log("🚀 ~ file: addEvent.js ~ line 96 ~ data", data);
-            if (err) {
-              return res.status(500).json({
-                status: 500,
-                message: "calendar Event Creation Error",
-                data: err,
-              });
-            } else {
-              return res.status(200).json({
-                status: 200,
-                message: "Calendar event successfully created.",
-                data: data.data,
-              });
+        if (eventsArray.length === 0)
+          calendar.events.insert(
+            {
+              calendarId: idCalendar,
+              conferenceDataVersion: conference ? 1 : 0,
+              resource: event,
+              sendNotifications: true,
+              sendUpdates: "all",
+            },
+            (error, data) => {
+              console.log("🚀 ~ file: addEvent.js ~ line 96 ~ data", data);
+              if (error) {
+                res.json({
+                  status: error?.code,
+                  message: error?.response?.statusText,
+                  errors: error,
+                  data: [],
+                });
+                reject();
+              } else {
+                res.json({
+                  status: 200,
+                  message: "Calendar event successfully created.",
+                  data: data.data,
+                  errors: null,
+                });
+                resolver();
+              }
             }
-          }
-        );
+          );
 
-      // If event array is not empty log that we are busy.
-      if (eventsArray.length !== 0) {
-        return res.status(500).json({
-          status: 500,
-          message: "Sorry I'm busy...",
-          data: eventsArray,
-        });
+        // If event array is not empty log that we are busy.
+        if (eventsArray.length !== 0) {
+          res.json({
+            status: err?.code,
+            message: "Sorry I'm busy...",
+            errors: "Sorry I'm busy...",
+            data: eventsArray,
+          });
+          reject();
+        }
       }
-    }
-  );
+    );
+  });
 };

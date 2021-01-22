@@ -4,6 +4,8 @@ export const DONE = "done";
 export const SUCCESS = "success";
 export const ERROR = "error";
 
+export const REGEX_EMAIL = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/g;
+
 export const CALENDAR_COLOR = [
   "#039be5",
   "#7986cb",

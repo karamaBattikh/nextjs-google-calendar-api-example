@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
+import { addMinutes } from "date-fns";
 
-const checkDomain = (email) => {
+const authoriseDomain = (email) => {
   const listDomain = ["@gmail.com"];
   const verified = listDomain.find((item) => email.endsWith(item));
 
@@ -39,15 +40,15 @@ const options = {
   secret: process.env.SECRET,
   session: {
     jwt: true,
-    maxAge: 1 * 1 * 30 * 60, // 30 days
-    updateAge: 1 * 15 * 60, // 24 hours
+    maxAge: 1 * 1 * 30 * 60, // 30 min
+    updateAge: 1 * 15 * 60, // 15 min
   },
   callbacks: {
     signIn: async (user, account, profile) => {
       if (
         account.provider === "google" &&
         profile.verified_email === true &&
-        checkDomain(profile.email) === true
+        authoriseDomain(profile.email) === true
       ) {
         return Promise.resolve(true);
       } else {
@@ -55,18 +56,20 @@ const options = {
       }
     },
     session: async (session, user) => {
-      session.accessToken = user?.accessToken;
-      if (new Date(session.auth_time).getTime() > new Date().getTime())
-        return Promise.reject();
-      else return Promise.resolve(session);
+      if (
+        addMinutes(new Date(user?.auth_time), 30).getTime() >
+        new Date().getTime()
+      ) {
+        session.accessToken = user?.accessToken;
+        return Promise.resolve(session);
+      } else return Promise.reject();
     },
     jwt: async (token, user, account) => {
       const isSignIn = user ? true : false;
 
       if (isSignIn) {
-        const { accessToken } = account;
-        token.auth_time = Math.floor(Date.now() / 1000);
-        token.accessToken = accessToken;
+        token.auth_time = new Date().getTime();
+        token.accessToken = account?.accessToken;
       }
       return Promise.resolve(token);
     },

@@ -7,6 +7,10 @@ import {
   startOfWeek,
 } from "date-fns";
 import PropTypes from "prop-types";
+import { useState, useContext } from "react";
+import { ModalContext } from "contexts/modal";
+import { FormEvent } from "components/molecules/form";
+
 import { DAYLIST } from "utils/constants";
 
 import Day from "../day";
@@ -33,6 +37,7 @@ const getDayOfWeek = (month, year) => {
 
 const Week = ({ month, year, setDayClick, dayClick }) => {
   const dayOfWeek = getDayOfWeek(month, year);
+  const { handleModalContent } = useContext(ModalContext);
 
   return (
     <div className={styles.calendarWeek}>
@@ -47,6 +52,7 @@ const Week = ({ month, year, setDayClick, dayClick }) => {
             day={getDate(new Date(day))}
             onClick={() => {
               setDayClick(day);
+              handleModalContent(<FormEvent day={day} />);
             }}
             weekend={isWeekend(new Date(day))}
             activeDay={isSameDay(day, dayClick)}

@@ -4,7 +4,7 @@ import Calendar from "components/molecules/calendar";
 import styles from "./home.module.scss";
 import { useCalendars, useDeleteCalendar } from "services/calendar";
 import Button from "components/atoms/button";
-import FormCalendar from "components/molecules/formCalendar";
+import { FormCalendar } from "components/molecules/form";
 import Confirmation from "components/molecules/confirmation";
 
 const Home = () => {
