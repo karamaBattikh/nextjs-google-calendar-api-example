@@ -1,4 +1,21 @@
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { getUnixTime } from "date-fns";
+
+export const fetchEvents = async (date) => {
+  const res = await fetch(`/api/event/events?month=${date}`);
+  const result = await res.json();
+
+  if (result?.status === 200) {
+    return Promise.resolve(result?.data);
+  } else {
+    return Promise.reject(result?.message);
+  }
+};
+
+export const useEvents = (dayClick) => {
+  const date = getUnixTime(dayClick);
+  return useQuery("get-all-event", () => fetchEvents(date));
+};
 
 export const useCreateEvent = () => {
   const queryClient = useQueryClient();

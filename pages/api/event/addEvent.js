@@ -83,7 +83,6 @@ export default async (req, res) => {
               sendUpdates: "all",
             },
             (error, data) => {
-              console.log("🚀 ~ file: addEvent.js ~ line 96 ~ data", data);
               if (error) {
                 res.json({
                   status: error?.code,
